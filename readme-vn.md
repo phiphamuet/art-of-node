@@ -89,7 +89,7 @@ Một "I/O dựa trên chương trình" là gì? Dưới đây là một số đ
 
 Node thực thi I/O trong một con đường đó là [asynchronous (bất đồng bộ)](http://en.wikipedia.org/wiki/Asynchronous_I/O) Nó cho phép xử lí nhiều việc khác nhau cùng một lúc. Ví dụ, nếu bạn đi xuống một cửa hàng thức ăn nhanh và đặt hàng một cheeseburger. họ ngay lập tức sẽ đặt hàng của bạn và sau đó làm cho bạn. Sau đó họ chờ đợi xung quanh cho đến khi phô mai đã sẵn sàng. Trong lúc đó họ có thể nhận đơn đặt hàng khác và bắt đầu làm cho người khác. Hãy tưởng tượng nếu bạn phải chờ đăng ký cheeseburger của bạn, ngăn chặn tất cả những người khác đặt hàng trong khi họ nấu burger cho bạn! Điều này được gọi là ** blocking I / O ** bởi vì tất cả I / O (làm cheeseburgers) xảy ra tại một thời điểm. Node, mặt khác, là ** non-blocking **, có nghĩa là nó có thể nấu nhiều cheeseburgers cùng một lúc.
 
-Dưới đây là một số những điều thú vị thực hiện dễ dàng với Node nhờ bản chất non-blocking( không chặn) nó:
+Dưới đây là một số những điều thú vị thực hiện dễ dàng với Node nhờ bản chất non-blocking( không chặn):
   
   - Control [flying quadcopters](http://nodecopter.com)
   - Write IRC chat bots
@@ -97,21 +97,21 @@ Dưới đây là một số những điều thú vị thực hiện dễ dàng 
 
 ## Core modules
 
-Firstly I would recommend that you get node installed on your computer. The easiest way is to visit [nodejs.org](http://nodejs.org) and click `Install`.
+Trước hết tôi khuyên bạn nên cài đặt Nodejs trên máy tính của mình. Cách đơn giản nhất là truy cập vào trang [nodejs.org](http://nodejs.org) và click `Install`.
 
-Node has a small core group of modules (commonly referred to as 'node core') that are presented as the public API that you are intended to write programs with. For working with file systems there is the `fs` module and for networks there are modules like `net` (TCP), `http`, `dgram` (UDP).
+Node có một nhóm các nhỏ các module chính (thường được gọi là 'node core') được trình bày như các API mở mà bạn có thể viết chương trình với chúng. Để làm việc với hệ thống các tệp tin đó là `fs` module và cho các hệ thống mạng(networks) như là `net` (TCP), `http`, `dgram` (UDP).
 
-In addition to `fs` and network modules there are a number of other base modules in node core. There is a module for asynchronously resolving DNS queries called `dns`, a module for getting OS specific information like the tmpdir location called `os`, a module for allocating binary chunks of memory called `buffer`, some modules for parsing urls and paths (`url`, `querystring`, `path`), etc. Most if not all of the modules in node core are there to support node's main use case: writing fast programs that talk to file systems or networks.
+Ngoài module `fs` và network modules còn có một số module cơ sở khác nằm trong node core. Có một module dành cho việc giải quyết các truy vấn DNS không đồng bộ là `dns`, một module để nhận thông tin về hệ điều hành cụ thể như vị trí tmpdir gọi là `os`, một module phân bổ khối nhị phân của bộ nhớ được gọi là `buffer`, một số module để phân tích url và đường dẫn như là (`url`, `querystring`, `path`), etc. Hầu hết không phải tất cả các module trong node core đang có để hỗ trợ các trường hợp sử dụng chính của Node: Xây dựng chương trình nhanh chóng mà có thể giao tiếp với các hệ thống tập tin hay hệ thống mạng(networks). ( Câu này hơi khó hiểu nhưng để đảm bảo đúng nguyên tác - Mình cũng không hiểu :D )
 
-Node handles I/O with: callbacks, events, streams and modules. If you learn how these four things work then you will be able to go into any module in node core and have a basic understanding about how to interface with it.
+Node xử lí I/O với: callbacks, events, streams và modules. Nếu bạn hiểu cách hoạt động của 4 thứ trên thì bạn có thể làm việc với bất kì module nào trong node core với sự hiểu biết cơ bản về cách giao tiếp với các module đó.
 
 ## Callbacks
 
-This is the most important topic to understand if you want to understand how to use node. Nearly everything in node uses callbacks. They weren't invented by node, they are just part of the JavaScript language.
+Đây là chủ đề quan trọng nhất để hiểu cách sử dụng Node. Gần như tất cả mọi thử trong Node đều sử dụng callback. Callback không được tạo ra bởi Node mà nó là một phần của ngỗn ngữ Javascript.
 
-Callbacks are functions that are executed asynchronously, or at a later time. Instead of the code reading top to bottom procedurally, async programs may execute different functions at different times based on the order and speed that earlier functions like http requests or file system reads happen.
+Callback là chức năng thực hiện không đồng bộ, hoặc ở một thời điểm sau đó. Thay vì code được mặc định đọc từ trên xuống, chương trình bất đồng bộ có thể thực hiện các chức năng( bạn cũng có thể gọi là hàm. Nhưng nói chức năng tổng quát hơn! :D ) khác nhau ở thời điểm khác nhau dựa trên thứ tự và tốc độ của chức năng trước đó như các yêu cầu http hoặc việc đọc tập tin.
 
-The difference can be confusing since determining if a function is asynchronous or not depends a lot on context. Here is a simple synchronous example, meaning you can read the code top to bottom just like a book:
+Sự khác biệt có thể gây nhầm lẫn khi xác định nếu một chức năng là không đồng bộ hay không phụ thuộc rất nhiều vào hoàn cảnh. Dưới đây là một ví dụ đơn giản, đồng bộ, có nghĩa là bạn có thể đọc mã từ trên xuống dưới giống như một cuốn sách:
 
 ```js
 var myNumber = 1
@@ -120,9 +120,9 @@ addOne() // run the function
 console.log(myNumber) // logs out 2
 ```
 
-The code here defines a function and then on the next line calls that function, without waiting for anything. When the function is called it immediately adds 1 to the number, so we can expect that after we call the function the number should be 2. This is the expectation of synchronous code - it sequentially runs top to bottom.
+Đoạn mã ở đây định nghĩa một hàm và các dòng tiếp theo thì gọi hàm đó ra mà không chờ đợi bất cứ điều gì. Khi hàm được gọi nó sẽ thực hiện thêm 1 đơn vị vào số myNumber, vì vậy nên chúng ta hi vọng rằng sau khi gọi hàm thì myNumber sẽ có giá trị là 2. Đây là kỳ vọng của mã đồng bộ - nó chạy tuần tự từ trên xuống dưới.
 
-Node, however, uses mostly asynchronous code. Let's use node to read our number from a file called `number.txt`:
+Còn Node, nó chủ yếu sử dụng mã không đồng bộ. Đoạn mã dưới đây sử dụng Node để đọc một số từ một file có tên là `number.txt`:
 
 ```js
 var fs = require('fs') // require is a special function provided by node
@@ -140,17 +140,17 @@ addOne()
 console.log(myNumber) // logs out undefined -- this line gets run before readFile is done
 ```
 
-Why do we get `undefined` when we log out the number this time? In this code we use the `fs.readFile` method, which happens to be an asynchronous method. Usually things that have to talk to hard drives or networks will be asynchronous. If they just have to access things in memory or do some work on the CPU they will be synchronous. The reason for this is that I/O is reallyyy reallyyy sloowwww. A ballpark figure would be that talking to a hard drive is about 100,000 times slower than talking to memory (e.g. RAM).
+Tại sao chúng ta nhận được giá trị `undefined` khi chúng ta xuất ra biến myNumber tại thời điểm đó? Trong mã này chúng tôi sử dụng phương thức `fs.readFile`, mà nó diễn ra dưới phương thức không đồng bộ. Thông thường những thao tác mà phải giao tiếp với ổ đĩa cứng hoặc mạng sẽ là không đồng bộ. Nếu họ chỉ cần phải truy nhập vào mọi thứ trong bộ nhớ hoặc làm một số công việc trên CPU thì chúng sẽ diễn ra đồng bộ. Lý do cho điều này là vì I/O là một thao tác cực kì tốn thời gian. Một con số nào đó nói rằng giao tiếp với một ổ đĩa cứng chậm hơn khoảng 100.000 lần khi giao tiếp với bộ nhớ (ví dụ như: RAM).
 
-When we run this program all of the functions are immediately defined, but they don't all execute immediately. This is a fundamental thing to understand about async programming. When `addOne` is called it kicks off a `readFile` and then moves on to the next thing that is ready to execute. If there is nothing to execute node will either wait for pending fs/network operations to finish or it will stop running and exit to the command line.
+Khi chúng tôi chạy chương trình này tất cả chức năng được định nghĩa ngay lập tức, nhưng không phải tất cả thực hiện ngay lập tức. Đây là một điều cơ bản để hiểu về lập trình bất đồng bộ( async). Khi hàm `addOne` được gọi là nó khởi động một phương thức `readFile` và sau đó chuyển sang trạng thái sẵn sàng thực thi. Nếu không có gì thực hiện thì Node sẽ đợi cho hoạt động fs(viết tắt của file system. Ở đây chính là nói đến `readFile`.) hoặc network để kết thúc hoặc nó sẽ ngừng chạy và thoát ra dòng lệnh.
 
-When `readFile` is done reading the file (this may take anywhere from milliseconds to seconds to minutes depending on how fast the hard drive is) it will run the `doneReading` function and give it an error (if there was an error) and the file contents.
+Khi `readFile` được thực hiện đọc các tập tin ( điều này sẽ tiêu tốn từ vài mili giây đến vài giây hoặc vài phút tùy thuộc vào tốc độ của ổ cứng) nó sẽ chạy hàm `doneReading` và cung cấp cho nó lỗi( nếu có) và nội dung tập tin.
 
-The reason we got `undefined` above is that nowhere in our code exists logic that tells the `console.log` statement to wait until the `readFile` statement finishes before it prints out the number.
+Đó là lý do mà chúng ta nhận được `undefined` bởi vì không nơi nào trong mã của chúng ta nói rằng câu lệnh `console.log` đợi cho đến khi câu lệnh `readFile` thực hiện xong rồi mới in ra kết quả.
 
-If you have some code that you want to be able to execute over and over again or at a later time the first step is to put that code inside a function. Then you can call the function whenever you want to run your code. It helps to give your functions descriptive names.
+Nếu bạn có bộ mã mà bạn muốn nó có thể thực hiện lặp đi lặp lại hoặc tại một thời gian sau đó. Bước đầu tiên là bạn nên đặt mã của bạn bên trong một hàm. Sau đó bạn có thể gọi hàm bất cứ lúc nào mà bạn muốn chạy mã của bạn. Nó giúp mang lại chức năng mà nó mô tả.
 
-Callbacks are just functions that get executed at some later time. The key to understanding callbacks is to realize that they are used when you don't know **when** some async operation will complete, but you do know **where** the operation will complete — the last line of the async function! The top-to-bottom order that you declare callbacks does not necessarily matter, only the logical/hierarchical nesting of them. First you split your code up into functions, and then use callbacks to declare if one function depends on another function finishing.
+Callbacks chỉ là một chức năng có thể thực hiện một thời gian sau đó. Chìa khóa để hiểu callback là nhận ra chúng được sử dụng khi bạn không biết **khi nào** một số thao tác bất đồng bộ sẽ hoàn thành, nhưng bạn biết **nơi nào** những thao tác đó sẽ hoàn thành — những dòng cuối cùng của hàm bất đồng bộ! Thứ tự từ trên xuống mà bạn định nghĩa callback không quá quan trọng, duy nhất là logic/ thứ bậc của nó. Trước tiên bạn cần chia mã của bạn thành các chức năng, và sau đó sử dụng callback để định nghĩa nếu một chức năng phụ thuộc vào một chức năng khác hoàn thành xong.
 
 The `fs.readFile` method is provided by node, is asynchronous and happens to take a long time to finish. Consider what it does: it has to go to the operating system, which in turn has to go to the file system, which lives on a hard drive that may or may not be spinning at thousands of revolutions per minute. Then it has to use a laser to read data and send it back up through the layers back into your javascript program. You give `readFile` a function (known as a callback) that it will call after it has retrieved the data from the file system. It puts the data it retrieved into a javascript variable and calls your function (callback) with that variable, in this case the variable is called `fileContents` because it contains the contents of the file that was read.
 
